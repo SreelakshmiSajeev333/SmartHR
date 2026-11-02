@@ -7,7 +7,10 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "smarthr-development-key")
 
-    SQLALCHEMY_DATABASE_URI = "sqlite:///smarthr.db"
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "sqlite:///smarthr.db"
+    )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

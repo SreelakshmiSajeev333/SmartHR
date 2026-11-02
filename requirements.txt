@@ -5,3 +5,5 @@ email-validator
 python-dotenv
 PyMuPDF
 google-genai
+gunicorn
+psycopg[binary]
