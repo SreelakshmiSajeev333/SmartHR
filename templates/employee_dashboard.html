@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Dashboard | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2>Employee Dashboard</h2>
+    <p class="text-muted">
+        Welcome to your AI-assisted HR support portal.
+    </p>
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">My Total Queries</h6>
+                <h2>{{ total_queries }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">AI HR Assistance</h6>
+                <p class="mb-0">
+                    Get answers to your questions using uploaded HR policies.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Need HR Assistance?</h5>
+        <p class="text-muted">
+            Ask questions about company policies and employee procedures.
+        </p>
+
+        <a href="{{ url_for('employee.ask_question') }}"
+           class="btn btn-primary">
+            Ask a Question
+        </a>
+
+        <a href="{{ url_for('employee.my_queries') }}"
+           class="btn btn-outline-primary ms-2">
+            View My Queries
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="mb-3">Recent Queries</h5>
+
+        {% if recent_queries %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for query in recent_queries %}
+                        <tr>
+                            <td>{{ query.question[:80] }}</td>
+
+                            <td>
+                                <span class="badge
+                                    {% if query.status == 'resolved' %}
+                                        bg-success
+                                    {% elif query.is_escalated %}
+                                        bg-danger
+                                    {% else %}
+                                        bg-warning text-dark
+                                    {% endif %}">
+                                    {{ query.status|capitalize }}
+                                </span>
+                            </td>
+
+                            <td>{{ query.created_at.strftime('%d-%m-%Y') }}</td>
+
+                            <td>
+                                <a href="{{ url_for('employee.view_query', query_id=query.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">
+                You haven't submitted any questions yet.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

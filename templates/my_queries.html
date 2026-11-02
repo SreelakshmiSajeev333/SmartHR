@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}My Queries | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2>My Queries</h2>
+    <p class="text-muted">
+        View and track all your submitted HR questions.
+    </p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        {% if queries %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Status</th>
+                        <th>Submitted Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for query in queries %}
+                    <tr>
+                        <td>{{ query.question[:100] }}</td>
+
+                        <td>
+                            {% if query.status == "resolved" %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% elif query.is_escalated %}
+                                <span class="badge bg-danger">Escalated</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">
+                                    {{ query.status|capitalize }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ query.created_at.strftime('%d-%m-%Y') }}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('employee.view_query', query_id=query.id) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+            <p class="text-muted mb-0">
+                You haven't submitted any queries yet.
+            </p>
+        {% endif %}
+
+        <a href="{{ url_for('employee.ask_question') }}"
+           class="btn btn-primary mt-3">
+            Ask a Question
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

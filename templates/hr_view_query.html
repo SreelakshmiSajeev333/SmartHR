@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Review Employee Query | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <h2>Employee Query Details</h2>
+
+                <hr>
+
+                <p>
+                    <strong>Employee:</strong>
+                    {{ employee_query.employee.name }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ employee_query.employee.email }}
+                </p>
+
+                <p>
+                    <strong>Submitted:</strong>
+                    {{ employee_query.created_at.strftime('%d-%m-%Y %H:%M') }}
+                </p>
+
+                <h5 class="mt-4">Employee Question</h5>
+
+                <div class="p-3 bg-light rounded mb-4">
+                    {{ employee_query.question }}
+                </div>
+
+                <h5>AI-Generated Response</h5>
+
+                <div class="p-3 border rounded mb-4">
+                    {{ employee_query.ai_response }}
+                </div>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    {% if employee_query.status == "resolved" %}
+                        <span class="badge bg-success">Resolved</span>
+                    {% elif employee_query.is_escalated %}
+                        <span class="badge bg-danger">Escalated</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+                    {% endif %}
+                </p>
+
+                {% if employee_query.escalation_reason %}
+                    <div class="alert alert-warning">
+                        <strong>Escalation Reason:</strong><br>
+                        {{ employee_query.escalation_reason }}
+                    </div>
+                {% endif %}
+
+                <hr>
+
+                <h5>HR Response</h5>
+
+                {% if employee_query.hr_response %}
+                    <div class="alert alert-success">
+                        {{ employee_query.hr_response }}
+                    </div>
+                {% endif %}
+
+                {% if employee_query.status != "resolved" %}
+                    <form method="POST"
+                          action="{{ url_for('hr_queries.view_query', query_id=employee_query.id) }}">
+
+                        <input type="hidden" name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Enter HR Response
+                            </label>
+
+                            <textarea name="hr_response"
+                                      class="form-control"
+                                      rows="5"
+                                      maxlength="5000"
+                                      required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Submit Response and Resolve
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-muted">
+                        This query has already been resolved.
+                    </p>
+                {% endif %}
+
+                <a href="{{ url_for('hr_queries.manage_queries') }}"
+                   class="btn btn-outline-secondary mt-3">
+                    Back to Queries
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

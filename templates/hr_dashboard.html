@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}HR Dashboard | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2>HR Dashboard</h2>
+    <p class="text-muted">
+        Manage employee queries and HR policy documents.
+    </p>
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">Employee Queries</h6>
+                <h2>{{ total_queries }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">Employees</h6>
+                <h2>{{ total_employees }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">Pending Queries</h6>
+                <h2>{{ pending_queries }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm dashboard-card">
+            <div class="card-body">
+                <h6 class="text-muted">Escalated Queries</h6>
+                <h2>{{ escalated_queries }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5>HR Policy Management</h5>
+                <p class="text-muted">
+                    Upload and manage company HR policy documents
+                    used by the AI assistance system.
+                </p>
+
+                <a href="{{ url_for('hr.upload_policy') }}"
+                   class="btn btn-primary">
+                    Upload Policy
+                </a>
+
+                <a href="{{ url_for('hr.policies') }}"
+                   class="btn btn-outline-primary ms-2">
+                    View Policies
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5>Employee Query Management</h5>
+                <p class="text-muted">
+                    Review employee questions, handle escalations
+                    and provide HR responses.
+                </p>
+
+                <a href="{{ url_for('hr_queries.manage_queries') }}"
+                   class="btn btn-primary">
+                    Manage Queries
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h5 class="mb-3">Recent Employee Queries</h5>
+
+        {% if recent_queries %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Question</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for query in recent_queries %}
+                    <tr>
+                        <td>{{ query.employee.name }}</td>
+                        <td>{{ query.question[:70] }}</td>
+
+                        <td>
+                            {% if query.status == "resolved" %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% elif query.is_escalated %}
+                                <span class="badge bg-danger">Escalated</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">
+                                    {{ query.status|capitalize }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ query.created_at.strftime('%d-%m-%Y') }}</td>
+
+                        <td>
+                            <a href="{{ url_for('hr_queries.view_query', query_id=query.id) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                Review
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted mb-0">
+                No employee queries have been submitted yet.
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

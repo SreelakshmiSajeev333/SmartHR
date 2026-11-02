@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Query Details | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+
+                <h3 class="mb-3">Your HR Query</h3>
+
+                <p class="text-muted">
+                    Submitted on:
+                    {{ employee_query.created_at.strftime('%d-%m-%Y %H:%M') }}
+                </p>
+
+                <div class="p-3 bg-light rounded mb-4">
+                    {{ employee_query.question }}
+                </div>
+
+                <h5>SmartHR AI Response</h5>
+
+                <div class="p-3 border rounded mb-4">
+                    {{ employee_query.ai_response }}
+                </div>
+
+                <h5>Query Status</h5>
+
+                <span class="badge
+                    {% if employee_query.status == 'resolved' %}
+                        bg-success
+                    {% elif employee_query.is_escalated %}
+                        bg-danger
+                    {% else %}
+                        bg-warning text-dark
+                    {% endif %}">
+                    {{ employee_query.status|capitalize }}
+                </span>
+
+                {% if employee_query.is_escalated %}
+                    <div class="alert alert-warning mt-3">
+                        <strong>HR Escalation:</strong>
+                        {{ employee_query.escalation_reason }}
+                        <br>
+                        Your query requires attention from the HR department.
+                    </div>
+                {% endif %}
+
+                {% if employee_query.hr_response %}
+                    <hr>
+                    <h5>Response from HR</h5>
+
+                    <div class="p-3 bg-light rounded">
+                        {{ employee_query.hr_response }}
+                    </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <a href="{{ url_for('employee.my_queries') }}"
+                       class="btn btn-outline-primary">
+                        Back to My Queries
+                    </a>
+
+                    <a href="{{ url_for('employee.ask_question') }}"
+                       class="btn btn-primary ms-2">
+                        Ask Another Question
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

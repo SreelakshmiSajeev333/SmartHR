@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Upload HR Policy | SmartHR{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <h2 class="mb-2">Upload HR Policy</h2>
+
+                <p class="text-muted mb-4">
+                    Upload a PDF document to make its contents available
+                    to the SmartHR AI assistance system.
+                </p>
+
+                <form method="POST"
+                      action="{{ url_for('hr.upload_policy') }}"
+                      enctype="multipart/form-data">
+
+                    <input type="hidden" name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Policy Title</label>
+
+                        <input type="text"
+                               name="title"
+                               class="form-control"
+                               placeholder="Example: Employee Leave Policy"
+                               maxlength="200"
+                               required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Select PDF Document</label>
+
+                        <input type="file"
+                               name="policy_file"
+                               class="form-control"
+                               accept=".pdf,application/pdf"
+                               required>
+
+                        <small class="text-muted">
+                            Only PDF files are accepted. Maximum size: 10 MB.
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Upload and Process
+                    </button>
+
+                    <a href="{{ url_for('hr.policies') }}"
+                       class="btn btn-outline-secondary ms-2">
+                        Cancel
+                    </a>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
